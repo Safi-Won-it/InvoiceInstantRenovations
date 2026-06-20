@@ -219,7 +219,7 @@
             background: white;
             width: 8.5in;
             height: 11in;
-            padding: 0.45in 0.4in;
+            padding: 0.4in 0.35in;
             box-shadow: 0 4px 20px rgba(0,0,0,0.02);
             display: flex;
             flex-direction: column;
@@ -234,11 +234,11 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .logo-box {
-            max-width: 145px;
+            max-width: 135px;
         }
 
         .logo-box img {
@@ -252,7 +252,7 @@
         }
 
         .header-meta-box h1 {
-            font-size: 1.8rem;
+            font-size: 1.7rem;
             font-weight: 300;
             letter-spacing: 4px;
             color: #000000;
@@ -260,7 +260,7 @@
         }
 
         .meta-text-line {
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             color: var(--muted-gray);
             margin-bottom: 3px;
         }
@@ -272,25 +272,25 @@
         .identity-container {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 25px;
-            gap: 40px;
+            margin-bottom: 20px;
+            gap: 30px;
         }
 
         .identity-column {
             flex: 1;
-            font-size: 0.8rem;
-            line-height: 1.45;
+            font-size: 0.78rem;
+            line-height: 1.4;
             color: var(--muted-gray);
         }
 
         .identity-column h4 {
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             text-transform: uppercase;
             letter-spacing: 1.5px;
             color: #000000;
             border-bottom: 1px solid var(--charcoal);
             padding-bottom: 4px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .identity-column .company-name {
@@ -307,22 +307,22 @@
         .minimal-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
         }
 
         .minimal-table th {
             font-weight: 600;
             text-transform: uppercase;
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             letter-spacing: 1px;
             color: #000000;
             border-bottom: 1.5px solid var(--charcoal);
-            padding: 6px 4px;
+            padding: 5px 4px;
             text-align: left;
         }
 
         .minimal-table td {
-            padding: 8px 4px;
+            padding: 7px 4px;
             border-bottom: 1px solid var(--light-border);
             color: #333333;
         }
@@ -341,9 +341,9 @@
 
         .terms-box {
             width: 55%;
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             color: var(--muted-gray);
-            line-height: 1.4;
+            line-height: 1.35;
         }
 
         .terms-box strong {
@@ -359,7 +359,7 @@
         .pricing-box table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
         }
 
         .pricing-box td {
@@ -369,7 +369,7 @@
 
         .pricing-box tr.grand-total-row td {
             border-top: 1.5px solid var(--charcoal);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 600;
             color: #000000;
             padding-top: 6px;
@@ -377,44 +377,57 @@
 
         /* Sheet Footer Component */
         .sheet-footer {
-            margin-top: 20px;
+            margin-top: 15px;
             border-top: 1px solid var(--light-border);
             padding-top: 8px;
             display: flex;
             justify-content: space-between;
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             color: var(--muted-gray);
         }
 
-        /* --- PRINT SECURITY & SCALE OVERRIDES --- */
+        /* --- HARD PRINT SECURITY FOR MOBILE & DESKTOP --- */
         @page {
             size: letter;
-            margin: 0; /* Clears browser headers and footers */
+            margin: 0mm !important; /* Strips browser page numbers/headers on phone and desktop */
         }
 
         @media print {
-            body {
-                background: white;
-                padding: 0;
-                margin: 0;
+            html, body {
+                width: 8.5in;
+                height: 11in;
+                background: #ffffff;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: hidden;
             }
             .control-panel, .app-header-title {
                 display: none !important;
             }
             .invoice-sheet-container {
                 overflow: visible;
+                display: block;
+                width: 8.5in;
+                height: 11in;
             }
             .invoice-sheet {
                 box-shadow: none;
-                margin: 0;
-                padding: 0.45in 0.4in;
-                width: 8.5in;
-                height: 11in;
-                page-break-inside: avoid;
-                page-break-after: avoid;
-                overflow: hidden;
+                margin: 0 !important;
+                padding: 0.4in 0.35in !important;
+                width: 8.5in !important;
+                height: 11in !important;
+                max-height: 11in !important;
+                page-break-inside: avoid !important;
+                page-break-after: avoid !important;
+                overflow: hidden !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+            }
+            .minimal-table td {
+                font-size: 11px !important;
             }
         }
 
