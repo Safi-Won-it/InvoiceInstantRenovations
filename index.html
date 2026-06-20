@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instant Renovations Invoice System</title>
+    <style>
+        :root {
+            --charcoal: #111111;
+            --muted-gray: #6e6e73;
+            --light-border: #e5e5e5;
+            
+            /* Apple Pro Light Theme Colors for Controls (High Contrast) */
+            --apple-bg: #f5f5f7;
+            --apple-panel: rgba(255, 255, 255, 0.85);
+            --apple-input: #ffffff;
+            --apple-text-main: #1d1d1f;
+            --apple-text-label: #424245;
+            --apple-border: #d2d2d7;
+            --apple-accent: #0071e3;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--apple-bg);
+            color: var(--charcoal);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .app-header-title {
+            font-size: 1.6rem;
+            color: var(--apple-text-main);
+            margin-bottom: 25px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+
+        /* --- APPLE LIGHT SIGNATURE CONTROL PANEL UI --- */
+        .control-panel {
+            background-color: var(--apple-panel);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--apple-border);
+            color: var(--apple-text-main);
+            padding: 25px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 8.5in;
+            margin-bottom: 35px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+        }
+
+        .panel-section {
+            margin-bottom: 20px;
+        }
+
+        .panel-section h3 {
+            color: var(--apple-text-main);
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: -0.1px;
+        }
+
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--apple-text-label);
+            margin-bottom: 6px;
+            font-weight: 550;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--apple-border);
+            background-color: var(--apple-input);
+            color: var(--apple-text-main);
+            font-size: 0.9rem;
+            transition: all 0.15s ease-in-out;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--apple-accent);
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+        }
+
+        .flex-row-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .flex-row-input .desc { flex: 3; }
+        .flex-row-input .qty { flex: 1; }
+        .flex-row-input .price { flex: 1; }
+
+        /* Apple Styled Interactive Buttons */
+        .btn {
+            background-color: #ffffff;
+            color: var(--apple-text-main);
+            border: 1px solid var(--apple-border);
+            padding: 8px 16px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.15s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+        .btn:hover {
+            background-color: #f5f5f7;
+            border-color: #c5c5c7;
+        }
+        .btn-danger { 
+            background-color: #fff2f2; 
+            color: #ff3b30; 
+            border: 1px solid #ffccd0;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+        }
+        .btn-danger:hover {
+            background-color: #ffe5e5;
+            border-color: #ff3b30;
+        }
+
+        .btn-print {
+            background-color: var(--apple-accent);
+            color: #ffffff;
+            border: none;
+            width: 100%;
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 15px;
+            box-shadow: 0 4px 12px rgba(0,113,227,0.2);
+        }
+        .btn-print:hover {
+            background-color: #0077ed;
+            transform: translateY(-0.5px);
+        }
+
+        /* Apple Modern Toggle Switch */
+        .apple-toggle-label {
+            color: var(--apple-text-main); 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 10px; 
+            font-weight: 550; 
+            font-size: 0.9rem;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .apple-toggle-label input[type="checkbox"] {
+            width: 42px;
+            height: 24px;
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: #e5e5ea;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            padding: 0;
+            border: none;
+        }
+
+        .apple-toggle-label input[type="checkbox"]:checked {
+            background-color: #34c759;
+        }
+
+        .apple-toggle-label input[type="checkbox"]::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            background-color: #ffffff;
+            transition: transform 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+
+        .apple-toggle-label input[type="checkbox"]:checked::before {
+            transform: translateX(18px);
+        }
+
+        /* --- PREMIUM INVOICE LIVE SHEET (Strict 1 Page Print Security) --- */
+        .invoice-sheet-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            overflow-x: auto;
+        }
+
+        .invoice-sheet {
+            background: white;
+            width: 8.5in;
+            height: 11in;
+            padding: 0.45in 0.4in;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Header Components */
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+
+        .logo-box {
+            max-width: 145px;
+        }
+
+        .logo-box img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .header-meta-box {
+            text-align: right;
+        }
+
+        .header-meta-box h1 {
+            font-size: 1.8rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+            color: #000000;
+            margin-bottom: 4px;
+        }
+
+        .meta-text-line {
+            font-size: 0.8rem;
+            color: var(--muted-gray);
+            margin-bottom: 3px;
+        }
+        .meta-text-line strong {
+            color: var(--charcoal);
+        }
+
+        /* Client & Company Architecture Block */
+        .identity-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            gap: 40px;
+        }
+
+        .identity-column {
+            flex: 1;
+            font-size: 0.8rem;
+            line-height: 1.45;
+            color: var(--muted-gray);
+        }
+
+        .identity-column h4 {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #000000;
+            border-bottom: 1px solid var(--charcoal);
+            padding-bottom: 4px;
+            margin-bottom: 8px;
+        }
+
+        .identity-column .company-name {
+            font-weight: 600;
+            color: var(--charcoal);
+        }
+
+        /* Items Ledger Area */
+        .items-table-area {
+            flex-grow: 1;
+            margin-bottom: 15px;
+        }
+
+        .minimal-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+
+        .minimal-table th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            color: #000000;
+            border-bottom: 1.5px solid var(--charcoal);
+            padding: 6px 4px;
+            text-align: left;
+        }
+
+        .minimal-table td {
+            padding: 8px 4px;
+            border-bottom: 1px solid var(--light-border);
+            color: #333333;
+        }
+
+        .minimal-table .text-right {
+            text-align: right;
+        }
+
+        /* Financial Summary Bottom Alignment Block */
+        .summary-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding-top: 8px;
+        }
+
+        .terms-box {
+            width: 55%;
+            font-size: 0.72rem;
+            color: var(--muted-gray);
+            line-height: 1.4;
+        }
+
+        .terms-box strong {
+            color: var(--charcoal);
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .pricing-box {
+            width: 35%;
+        }
+
+        .pricing-box table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+
+        .pricing-box td {
+            padding: 4px 0;
+            color: var(--muted-gray);
+        }
+
+        .pricing-box tr.grand-total-row td {
+            border-top: 1.5px solid var(--charcoal);
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #000000;
+            padding-top: 6px;
+        }
+
+        /* Sheet Footer Component */
+        .sheet-footer {
+            margin-top: 20px;
+            border-top: 1px solid var(--light-border);
+            padding-top: 8px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: var(--muted-gray);
+        }
+
+        /* --- PRINT SECURITY & SCALE OVERRIDES --- */
+        @page {
+            size: letter;
+            margin: 0; /* Clears browser headers and footers */
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            .control-panel, .app-header-title {
+                display: none !important;
+            }
+            .invoice-sheet-container {
+                overflow: visible;
+            }
+            .invoice-sheet {
+                box-shadow: none;
+                margin: 0;
+                padding: 0.45in 0.4in;
+                width: 8.5in;
+                height: 11in;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+                overflow: hidden;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .flex-row-input {
+                flex-direction: column;
+                background: rgba(0,0,0,0.02);
+                padding: 12px;
+                border-radius: 8px;
+                border: 1px solid var(--apple-border);
+            }
+            .invoice-sheet-container {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="app-header-title">Instant Renovations Studio</h1>
+
+    <!-- APPLE DESIGN LIGHT CONTROL CENTER -->
+    <div class="control-panel">
+        <div class="panel-section">
+            <h3>Document Configuration</h3>
+            <div class="grid-inputs">
+                <div>
+                    <label>Invoice Token ID</label>
+                    <input type="text" id="in-inv-num" value="INV-2026-042" oninput="refreshInvoiceData()">
+                </div>
+                <div>
+                    <label>Date of Issue</label>
+                    <input type="date" id="in-date" onchange="refreshInvoiceData()">
+                </div>
+                <div>
+                    <label>Maturity Deadline</label>
+                    <input type="date" id="in-due-date" onchange="refreshInvoiceData()">
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-section">
+            <h3>Recipient Profile</h3>
+            <div class="grid-inputs" style="grid-template-columns: 1fr 2fr;">
+                <div>
+                    <label>Client Entity / Name</label>
+                    <input type="text" id="in-client-name" placeholder="Client Designation" oninput="refreshInvoiceData()">
+                </div>
+                <div>
+                    <label>Billing & Destination Coordinates</label>
+                    <input type="text" id="in-client-addr" placeholder="Street Address, City, Province" oninput="refreshInvoiceData()">
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-section">
+            <h3>Parameters & Assets</h3>
+            <div style="margin-bottom: 12px;">
+                <label class="apple-toggle-label">
+                    <input type="checkbox" id="in-tax-toggle" checked onchange="toggleTaxView()">
+                    Apply Harmonized Sales Tax (13% HST)
+                </label>
+            </div>
+            <div id="tax-input-wrap">
+                <label>HST Account Registration Reference</label>
+                <input type="text" id="in-tax-num" value="78392 4165 RT0001" oninput="refreshInvoiceData()" style="max-width: 280px;">
+            </div>
+            <div style="margin-top: 12px;">
+                <label>Logo Asset File Pathway Reference</label>
+                <input type="text" id="in-logo-path" value="instantlogo_2.png" oninput="refreshInvoiceData()">
+            </div>
+        </div>
+
+        <div class="panel-section">
+            <h3>Line Items Ledger</h3>
+            <div id="dynamic-items-box"></div>
+            <button class="btn" onclick="addNewLineItem()">+ Append Service Item</button>
+        </div>
+
+        <button class="btn btn-print" onclick="window.print()">Print / Export Single-Page PDF</button>
+    </div>
+
+    <!-- PREPARED WORKSPACE SHEET AREA (Strict One-Page Security Guard) -->
+    <div class="invoice-sheet-container">
+        <div class="invoice-sheet" id="print-sheet">
+            
+            <div>
+                <!-- Top Minimal Header Structure -->
+                <div class="invoice-header">
+                    <div class="logo-box">
+                        <img id="sheet-logo-img" src="instantlogo_2.png" alt="instantlogo_2.png">
+                    </div>
+                    <div class="header-meta-box">
+                        <h1>INVOICE</h1>
+                        <div class="meta-text-line"><strong>Invoice #:</strong> <span id="out-inv-num"></span></div>
+                        <div class="meta-text-line"><strong>Date:</strong> <span id="out-date"></span></div>
+                        <div class="meta-text-line"><strong>Due Date:</strong> <span id="out-due-date"></span></div>
+                    </div>
+                </div>
+
+                <!-- Identity Distribution Section -->
+                <div class="identity-container">
+                    <div class="identity-column">
+                        <h4>Corporate Operations</h4>
+                        <div class="company-name">Instant Renovations Inc.</div>
+                        <div>Toronto, ON, Canada</div>
+                        <div>Phone: +1 437-860-2717</div>
+                        <div>Email: renovations.chd@instantrenovations.ca</div>
+                        <div>Web: www.instantrenovations.ca</div>
+                    </div>
+                    <div class="identity-column">
+                        <h4>Prepared Exclusively For</h4>
+                        <div class="company-name" id="out-client-name">Client Designation Entity</div>
+                        <div id="out-client-addr">Destination Billing Address Parameters</div>
+                    </div>
+                </div>
+
+                <!-- Minimal Table Ledger Line Elements -->
+                <div class="items-table-area">
+                    <table class="minimal-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 60%;">Description of Services Rendered</th>
+                                <th class="text-right" style="width: 10%;">Qty</th>
+                                <th class="text-right" style="width: 15%;">Unit Rate</th>
+                                <th class="text-right" style="width: 15%;">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sheet-table-body">
+                            <!-- Injected rows appear here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Persistent Alignment Bottom Anchor Block -->
+            <div>
+                <div class="summary-container">
+                    <div class="terms-box">
+                        <strong>Terms of Settlement</strong>
+                        Electronic funds transfer routing instructions point directly to the designated email communications address line. Please include your reference identification assignment code within your balance settlement transactions profile stack to clear open balances promptly.
+                    </div>
+                    <div class="pricing-box">
+                        <table>
+                            <tr>
+                                <td>Subtotal:</td>
+                                <td class="text-right" id="out-subtotal">$0.00</td>
+                            </tr>
+                            <tr id="sheet-tax-item-row">
+                                <td>Harmonized Sales Tax (13%):</td>
+                                <td class="text-right" id="out-tax">$0.00</td>
+                            </tr>
+                            <tr class="grand-total-row">
+                                <td>Balance Due:</td>
+                                <td class="text-right" id="out-total">$0.00</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Minimal Dynamic Footer Summary Signature Lines -->
+                <div class="sheet-footer">
+                    <div>
+                        <span id="out-tax-reg-id-line">HST/GST ID: 78392 4165 RT0001</span>
+                    </div>
+                    <div>Instant Renovations Inc. &mdash; Professional Custom Contracting Solutions</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('in-date').valueAsDate = new Date();
+        const futureDate = new Date();
+        futureDate.setDate(futureDate.getDate() + 30); 
+        document.getElementById('in-due-date').valueAsDate = futureDate;
+
+        let workspaceItems = [
+            { description: 'Premium Minimal Living Room Structural Upgrades', qty: 1, price: 4850.00 },
+            { description: 'Architectural Custom Millwork Fitment & Trim Optimization', qty: 1, price: 1950.00 }
+        ];
+
+        function runStartupConfig() {
+            renderControlsList();
+            refreshInvoiceData();
+        }
+
+        function renderControlsList() {
+            const container = document.getElementById('dynamic-items-box');
+            container.innerHTML = '';
+            workspaceItems.forEach((item, pointer) => {
+                const subRow = document.createElement('div');
+                subRow.className = 'flex-row-input';
+                subRow.innerHTML = `
+                    <input type="text" class="desc" value="${item.description}" placeholder="Service description" oninput="editItemStore(${pointer}, 'description', this.value)">
+                    <input type="number" class="qty" value="${item.qty}" min="0" step="any" placeholder="Qty" oninput="editItemStore(${pointer}, 'qty', this.value)">
+                    <input type="number" class="price" value="${item.price}" min="0" step="0.01" placeholder="Rate" oninput="editItemStore(${pointer}, 'price', this.value)">
+                    <button class="btn btn-danger" onclick="deleteLineItem(${pointer})">✕</button>
+                `;
+                container.appendChild(subRow);
+            });
+        }
+
+        function addNewLineItem() {
+            workspaceItems.push({ description: '', qty: 1, price: 0.00 });
+            renderControlsList();
+            refreshInvoiceData();
+        }
+
+        function deleteLineItem(pointer) {
+            workspaceItems.splice(pointer, 1);
+            renderControlsList();
+            refreshInvoiceData();
+        }
+
+        function editItemStore(pointer, metric, dataValue) {
+            if (metric === 'qty' || metric === 'price') {
+                workspaceItems[pointer][metric] = parseFloat(dataValue) || 0;
+            } else {
+                workspaceItems[pointer][metric] = dataValue;
+            }
+            refreshInvoiceData();
+        }
+
+        function toggleTaxView() {
+            const taxInputArea = document.getElementById('tax-input-wrap');
+            const sheetTaxRow = document.getElementById('sheet-tax-item-row');
+            const taxRegText = document.getElementById('out-tax-reg-id-line');
+            const activeStatus = document.getElementById('in-tax-toggle').checked;
+
+            if (activeStatus) {
+                taxInputArea.style.display = 'block';
+                sheetTaxRow.style.display = 'table-row';
+                taxRegText.style.display = 'inline';
+            } else {
+                taxInputArea.style.display = 'none';
+                sheetTaxRow.style.display = 'none';
+                taxRegText.style.display = 'none';
+            }
+            refreshInvoiceData();
+        }
+
+        function refreshInvoiceData() {
+            document.getElementById('out-inv-num').innerText = document.getElementById('in-inv-num').value;
+            
+            const rawDate = document.getElementById('in-date').value;
+            document.getElementById('out-date').innerText = rawDate ? new Date(rawDate + 'T00:00:00').toLocaleDateString('en-CA') : '';
+            
+            const rawDueDate = document.getElementById('in-due-date').value;
+            document.getElementById('out-due-date').innerText = rawDueDate ? new Date(rawDueDate + 'T00:00:00').toLocaleDateString('en-CA') : '';
+
+            document.getElementById('out-client-name').innerText = document.getElementById('in-client-name').value || 'Client Assignment Designation';
+            document.getElementById('out-client-addr').innerText = document.getElementById('in-client-addr').value || 'Destination Billing Location Coordinates';
+            
+            const imgEl = document.getElementById('sheet-logo-img');
+            imgEl.src = document.getElementById('in-logo-path').value || 'instantlogo_2.png';
+            imgEl.alt = document.getElementById('in-logo-path').value || 'instantlogo_2.png';
+
+            const taxNumInput = document.getElementById('in-tax-num').value;
+            document.getElementById('out-tax-reg-id-line').innerText = taxNumInput ? `HST/GST ID: ${taxNumInput}` : '';
+
+            const tableTarget = document.getElementById('sheet-table-body');
+            tableTarget.innerHTML = '';
+            
+            let incrementalSubtotal = 0;
+
+            workspaceItems.forEach(lineItem => {
+                const structuralRowCost = lineItem.qty * lineItem.price;
+                incrementalSubtotal += structuralRowCost;
+
+                const trElement = document.createElement('tr');
+                trElement.innerHTML = `
+                    <td>${lineItem.description || 'Custom Architecture Configuration'}</td>
+                    <td class="text-right">${lineItem.qty}</td>
+                    <td class="text-right">$${lineItem.price.toFixed(2)}</td>
+                    <td class="text-right">$${structuralRowCost.toFixed(2)}</td>
+                `;
+                tableTarget.appendChild(trElement);
+            });
+
+            const taxFactor = document.getElementById('in-tax-toggle').checked ? 0.13 : 0;
+            const absoluteTaxAmount = incrementalSubtotal * taxFactor;
+            const completeTotalBalance = incrementalSubtotal + absoluteTaxAmount;
+
+            document.getElementById('out-subtotal').innerText = `$${incrementalSubtotal.toFixed(2)}`;
+            document.getElementById('out-tax').innerText = `$${absoluteTaxAmount.toFixed(2)}`;
+            document.getElementById('out-total').innerText = `$${completeTotalBalance.toFixed(2)}`;
+        }
+
+        window.onload = runStartupConfig;
+    </script>
+</body>
+</html>
