@@ -219,11 +219,10 @@
             background: white;
             width: 8.5in;
             height: 11in;
-            padding: 0.4in 0.35in;
+            padding: 0.5in 0.4in;
             box-shadow: 0 4px 20px rgba(0,0,0,0.02);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
             box-sizing: border-box;
             position: relative;
             overflow: hidden;
@@ -300,8 +299,8 @@
 
         /* Items Ledger Area */
         .items-table-area {
-            flex-grow: 1;
             margin-bottom: 15px;
+            overflow: hidden;
         }
 
         .minimal-table {
@@ -389,40 +388,39 @@
         /* --- HARD PRINT SECURITY FOR MOBILE & DESKTOP --- */
         @page {
             size: letter;
-            margin: 0mm !important; /* Strips browser page numbers/headers on phone and desktop */
+            margin: 0mm !important; 
         }
 
         @media print {
             html, body {
-                width: 8.5in;
-                height: 11in;
+                width: 8.5in !important;
+                height: 11in !important;
                 background: #ffffff;
                 margin: 0 !important;
                 padding: 0 !important;
-                overflow: hidden;
+                overflow: hidden !important;
             }
             .control-panel, .app-header-title {
                 display: none !important;
             }
             .invoice-sheet-container {
-                overflow: visible;
-                display: block;
-                width: 8.5in;
-                height: 11in;
+                overflow: visible !important;
+                display: block !important;
+                width: 8.5in !important;
+                height: 11in !important;
             }
             .invoice-sheet {
-                box-shadow: none;
+                box-shadow: none !important;
                 margin: 0 !important;
                 padding: 0.4in 0.35in !important;
                 width: 8.5in !important;
                 height: 11in !important;
                 max-height: 11in !important;
+                display: grid !important;
+                grid-template-rows: auto 1fr auto !important;
                 page-break-inside: avoid !important;
                 page-break-after: avoid !important;
                 overflow: hidden !important;
-                display: flex !important;
-                flex-direction: column !important;
-                justify-content: space-between !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
@@ -514,8 +512,8 @@
     <div class="invoice-sheet-container">
         <div class="invoice-sheet" id="print-sheet">
             
+            <!-- Top Structural Block -->
             <div>
-                <!-- Top Minimal Header Structure -->
                 <div class="invoice-header">
                     <div class="logo-box">
                         <img id="sheet-logo-img" src="instantlogo_2.png" alt="instantlogo_2.png">
@@ -528,7 +526,6 @@
                     </div>
                 </div>
 
-                <!-- Identity Distribution Section -->
                 <div class="identity-container">
                     <div class="identity-column">
                         <h4>Corporate Operations</h4>
@@ -544,23 +541,23 @@
                         <div id="out-client-addr">Destination Billing Address Parameters</div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Minimal Table Ledger Line Elements -->
-                <div class="items-table-area">
-                    <table class="minimal-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 60%;">Description of Services Rendered</th>
-                                <th class="text-right" style="width: 10%;">Qty</th>
-                                <th class="text-right" style="width: 15%;">Unit Rate</th>
-                                <th class="text-right" style="width: 15%;">Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody id="sheet-table-body">
-                            <!-- Injected rows appear here -->
-                        </tbody>
-                    </table>
-                </div>
+            <!-- Middle Flexible Table Ledger Area -->
+            <div class="items-table-area">
+                <table class="minimal-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 60%;">Description of Services Rendered</th>
+                            <th class="text-right" style="width: 10%;">Qty</th>
+                            <th class="text-right" style="width: 15%;">Unit Rate</th>
+                            <th class="text-right" style="width: 15%;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sheet-table-body">
+                        <!-- Injected rows appear here -->
+                    </tbody>
+                </table>
             </div>
 
             <!-- Persistent Alignment Bottom Anchor Block -->
@@ -588,7 +585,6 @@
                     </div>
                 </div>
 
-                <!-- Minimal Dynamic Footer Summary Signature Lines -->
                 <div class="sheet-footer">
                     <div>
                         <span id="out-tax-reg-id-line">HST/GST ID: 78392 4165 RT0001</span>
