@@ -7,17 +7,17 @@
     <style>
         :root {
             --charcoal: #111111;
-            --muted-gray: #6e6e73;
+            --muted-gray: #8e8e93;
             --light-border: #e5e5e5;
             
-            /* Apple Pro Light Theme Colors for Controls (High Contrast) */
-            --apple-bg: #f5f5f7;
-            --apple-panel: rgba(255, 255, 255, 0.85);
-            --apple-input: #ffffff;
-            --apple-text-main: #1d1d1f;
-            --apple-text-label: #424245;
-            --apple-border: #d2d2d7;
-            --apple-accent: #0071e3;
+            /* Apple Pro Dark Theme Colors for Controls */
+            --apple-bg: #000000;
+            --apple-panel: #1c1c1e;
+            --apple-input: #2c2c2e;
+            --apple-text-main: #f5f5f7;
+            --apple-text-label: #aeaeae;
+            --apple-border: #3a3a3c;
+            --apple-accent: #0a84ff;
         }
 
         * {
@@ -30,7 +30,7 @@
 
         body {
             background-color: var(--apple-bg);
-            color: var(--charcoal);
+            color: var(--apple-text-main);
             padding: 30px 20px;
             display: flex;
             flex-direction: column;
@@ -46,11 +46,9 @@
             text-align: center;
         }
 
-        /* --- APPLE LIGHT SIGNATURE CONTROL PANEL UI --- */
+        /* --- APPLE DARK SIGNATURE CONTROL PANEL UI --- */
         .control-panel {
             background-color: var(--apple-panel);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--apple-border);
             color: var(--apple-text-main);
             padding: 25px;
@@ -58,16 +56,24 @@
             width: 100%;
             max-width: 8.5in;
             margin-bottom: 35px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         }
 
         .panel-section {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--apple-border);
+            padding-bottom: 20px;
+        }
+        
+        .panel-section:last-of-type {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 10px;
         }
 
         .panel-section h3 {
             color: var(--apple-text-main);
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             font-size: 0.95rem;
             font-weight: 600;
             letter-spacing: -0.1px;
@@ -101,7 +107,7 @@
         input:focus {
             outline: none;
             border-color: var(--apple-accent);
-            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+            box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.25);
         }
 
         .flex-row-input {
@@ -116,7 +122,7 @@
 
         /* Apple Styled Interactive Buttons */
         .btn {
-            background-color: #ffffff;
+            background-color: var(--apple-input);
             color: var(--apple-text-main);
             border: 1px solid var(--apple-border);
             padding: 8px 16px;
@@ -125,22 +131,21 @@
             cursor: pointer;
             font-size: 0.85rem;
             transition: all 0.15s ease;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
         }
         .btn:hover {
-            background-color: #f5f5f7;
-            border-color: #c5c5c7;
+            background-color: #3a3a3c;
+            border-color: #48484a;
         }
         .btn-danger { 
-            background-color: #fff2f2; 
-            color: #ff3b30; 
-            border: 1px solid #ffccd0;
+            background-color: #3a1616; 
+            color: #ff453a; 
+            border: 1px solid #641e1e;
             font-size: 0.9rem;
             padding: 8px 12px;
         }
         .btn-danger:hover {
-            background-color: #ffe5e5;
-            border-color: #ff3b30;
+            background-color: #4c1f1f;
+            border-color: #ff453a;
         }
 
         .btn-print {
@@ -153,10 +158,10 @@
             padding: 12px;
             border-radius: 10px;
             margin-top: 15px;
-            box-shadow: 0 4px 12px rgba(0,113,227,0.2);
+            box-shadow: 0 4px 12px rgba(10,132,255,0.3);
         }
         .btn-print:hover {
-            background-color: #0077ed;
+            background-color: #409cff;
             transform: translateY(-0.5px);
         }
 
@@ -177,7 +182,7 @@
             height: 24px;
             appearance: none;
             -webkit-appearance: none;
-            background-color: #e5e5ea;
+            background-color: #3a3a3c;
             border-radius: 12px;
             position: relative;
             cursor: pointer;
@@ -187,7 +192,7 @@
         }
 
         .apple-toggle-label input[type="checkbox"]:checked {
-            background-color: #34c759;
+            background-color: #30d158;
         }
 
         .apple-toggle-label input[type="checkbox"]::before {
@@ -200,14 +205,17 @@
             left: 2px;
             background-color: #ffffff;
             transition: transform 0.2s;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
         }
 
         .apple-toggle-label input[type="checkbox"]:checked::before {
             transform: translateX(18px);
         }
 
-        /* --- PREMIUM INVOICE LIVE SHEET (Strict 1 Page Print Security) --- */
+        .conditional-group {
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* --- PREMIUM INVOICE LIVE SHEET (Strict Single Page Security) --- */
         .invoice-sheet-container {
             width: 100%;
             display: flex;
@@ -217,10 +225,11 @@
 
         .invoice-sheet {
             background: white;
+            color: var(--charcoal);
             width: 8.5in;
             height: 11in;
             padding: 0.5in 0.4in;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
             display: grid;
             grid-template-rows: auto 1fr auto;
             box-sizing: border-box;
@@ -260,7 +269,7 @@
 
         .meta-text-line {
             font-size: 0.78rem;
-            color: var(--muted-gray);
+            color: #6e6e73;
             margin-bottom: 3px;
         }
         .meta-text-line strong {
@@ -279,7 +288,7 @@
             flex: 1;
             font-size: 0.78rem;
             line-height: 1.4;
-            color: var(--muted-gray);
+            color: #6e6e73;
         }
 
         .identity-column h4 {
@@ -341,7 +350,7 @@
         .terms-box {
             width: 55%;
             font-size: 0.7rem;
-            color: var(--muted-gray);
+            color: #6e6e73;
             line-height: 1.35;
         }
 
@@ -363,7 +372,7 @@
 
         .pricing-box td {
             padding: 4px 0;
-            color: var(--muted-gray);
+            color: #6e6e73;
         }
 
         .pricing-box tr.grand-total-row td {
@@ -382,10 +391,10 @@
             display: flex;
             justify-content: space-between;
             font-size: 0.68rem;
-            color: var(--muted-gray);
+            color: #6e6e73;
         }
 
-        /* --- HARD PRINT SECURITY FOR MOBILE & DESKTOP --- */
+        /* --- HARD PRINT SECURITY FOR IPHONE, IPAD & DESKTOP --- */
         @page {
             size: letter;
             margin: 0mm !important; 
@@ -395,10 +404,13 @@
             html, body {
                 width: 8.5in !important;
                 height: 11in !important;
-                background: #ffffff;
+                max-height: 11in !important;
+                background: #ffffff !important;
                 margin: 0 !important;
                 padding: 0 !important;
                 overflow: hidden !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
             .control-panel, .app-header-title {
                 display: none !important;
@@ -408,6 +420,7 @@
                 display: block !important;
                 width: 8.5in !important;
                 height: 11in !important;
+                max-height: 11in !important;
             }
             .invoice-sheet {
                 box-shadow: none !important;
@@ -421,8 +434,6 @@
                 page-break-inside: avoid !important;
                 page-break-after: avoid !important;
                 overflow: hidden !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
             }
             .minimal-table td {
                 font-size: 11px !important;
@@ -432,7 +443,7 @@
         @media (max-width: 768px) {
             .flex-row-input {
                 flex-direction: column;
-                background: rgba(0,0,0,0.02);
+                background: rgba(255,255,255,0.04);
                 padding: 12px;
                 border-radius: 8px;
                 border: 1px solid var(--apple-border);
@@ -447,14 +458,25 @@
 
     <h1 class="app-header-title">Instant Renovations Studio</h1>
 
-    <!-- APPLE DESIGN LIGHT CONTROL CENTER -->
+    <!-- APPLE DESIGN DARK CONTROL CENTER -->
     <div class="control-panel">
+        
+        <div class="panel-section">
+            <h3>Tax Preferences</h3>
+            <div style="margin-bottom: 5px;">
+                <label class="apple-toggle-label">
+                    <input type="checkbox" id="in-tax-toggle" checked onchange="toggleTaxView()">
+                    Apply Harmonized Sales Tax (13% HST)
+                </label>
+            </div>
+        </div>
+
         <div class="panel-section">
             <h3>Document Configuration</h3>
             <div class="grid-inputs">
-                <div>
-                    <label>Invoice Token ID</label>
-                    <input type="text" id="in-inv-num" value="INV-2026-042" oninput="refreshInvoiceData()">
+                <div id="inv-num-input-wrap" class="conditional-group">
+                    <label>Invoice ID (Numbers Only)</label>
+                    <input type="number" id="in-inv-num" value="2026042" pattern="[0-9]*" inputmode="numeric" oninput="refreshInvoiceData()">
                 </div>
                 <div>
                     <label>Date of Issue</label>
@@ -464,6 +486,10 @@
                     <label>Maturity Deadline</label>
                     <input type="date" id="in-due-date" onchange="refreshInvoiceData()">
                 </div>
+            </div>
+            <div id="tax-input-wrap" class="conditional-group" style="margin-top: 15px;">
+                <label>HST Account Registration Reference</label>
+                <input type="text" id="in-tax-num" value="78392 4165 RT0001" oninput="refreshInvoiceData()" style="max-width: 280px;">
             </div>
         </div>
 
@@ -478,24 +504,6 @@
                     <label>Billing & Destination Coordinates</label>
                     <input type="text" id="in-client-addr" placeholder="Street Address, City, Province" oninput="refreshInvoiceData()">
                 </div>
-            </div>
-        </div>
-
-        <div class="panel-section">
-            <h3>Parameters & Assets</h3>
-            <div style="margin-bottom: 12px;">
-                <label class="apple-toggle-label">
-                    <input type="checkbox" id="in-tax-toggle" checked onchange="toggleTaxView()">
-                    Apply Harmonized Sales Tax (13% HST)
-                </label>
-            </div>
-            <div id="tax-input-wrap">
-                <label>HST Account Registration Reference</label>
-                <input type="text" id="in-tax-num" value="78392 4165 RT0001" oninput="refreshInvoiceData()" style="max-width: 280px;">
-            </div>
-            <div style="margin-top: 12px;">
-                <label>Logo Asset File Pathway Reference</label>
-                <input type="text" id="in-logo-path" value="instantlogo_2.png" oninput="refreshInvoiceData()">
             </div>
         </div>
 
@@ -516,11 +524,11 @@
             <div>
                 <div class="invoice-header">
                     <div class="logo-box">
-                        <img id="sheet-logo-img" src="instantlogo_2.png" alt="instantlogo_2.png">
+                        <img id="sheet-logo-img" src="instantlogo_2.png" alt="Logo">
                     </div>
                     <div class="header-meta-box">
                         <h1>INVOICE</h1>
-                        <div class="meta-text-line"><strong>Invoice #:</strong> <span id="out-inv-num"></span></div>
+                        <div class="meta-text-line" id="sheet-inv-num-line"><strong>Invoice #:</strong> <span id="out-inv-num"></span></div>
                         <div class="meta-text-line"><strong>Date:</strong> <span id="out-date"></span></div>
                         <div class="meta-text-line"><strong>Due Date:</strong> <span id="out-due-date"></span></div>
                     </div>
@@ -610,6 +618,7 @@
         function runStartupConfig() {
             renderControlsList();
             refreshInvoiceData();
+            toggleTaxView();
         }
 
         function renderControlsList() {
@@ -651,17 +660,25 @@
 
         function toggleTaxView() {
             const taxInputArea = document.getElementById('tax-input-wrap');
+            const invInputArea = document.getElementById('inv-num-input-wrap');
+            
             const sheetTaxRow = document.getElementById('sheet-tax-item-row');
+            const sheetInvLine = document.getElementById('sheet-inv-num-line');
             const taxRegText = document.getElementById('out-tax-reg-id-line');
+            
             const activeStatus = document.getElementById('in-tax-toggle').checked;
 
             if (activeStatus) {
                 taxInputArea.style.display = 'block';
+                invInputArea.style.display = 'block';
                 sheetTaxRow.style.display = 'table-row';
+                sheetInvLine.style.display = 'block';
                 taxRegText.style.display = 'inline';
             } else {
                 taxInputArea.style.display = 'none';
+                invInputArea.style.display = 'none';
                 sheetTaxRow.style.display = 'none';
+                sheetInvLine.style.display = 'none';
                 taxRegText.style.display = 'none';
             }
             refreshInvoiceData();
@@ -678,10 +695,6 @@
 
             document.getElementById('out-client-name').innerText = document.getElementById('in-client-name').value || 'Client Assignment Designation';
             document.getElementById('out-client-addr').innerText = document.getElementById('in-client-addr').value || 'Destination Billing Location Coordinates';
-            
-            const imgEl = document.getElementById('sheet-logo-img');
-            imgEl.src = document.getElementById('in-logo-path').value || 'instantlogo_2.png';
-            imgEl.alt = document.getElementById('in-logo-path').value || 'instantlogo_2.png';
 
             const taxNumInput = document.getElementById('in-tax-num').value;
             document.getElementById('out-tax-reg-id-line').innerText = taxNumInput ? `HST/GST ID: ${taxNumInput}` : '';
