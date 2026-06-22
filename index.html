@@ -116,9 +116,9 @@
             margin-bottom: 10px;
             align-items: center;
         }
-        .flex-row-input class="desc" { flex: 3; }
-        .flex-row-input class="qty" { flex: 1; }
-        .flex-row-input class="price" { flex: 1; }
+        .flex-row-input .desc { flex: 3; }
+        .flex-row-input .qty { flex: 1; }
+        .flex-row-input .price { flex: 1; }
 
         .btn {
             background-color: var(--apple-input);
@@ -355,6 +355,16 @@
             margin-bottom: 3px;
         }
 
+        .payment-alert {
+            display: block;
+            margin-top: 6px;
+            font-weight: 700;
+            color: #000000;
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            letter-spacing: 0.3px;
+        }
+
         .pricing-box {
             width: 35%;
         }
@@ -383,7 +393,7 @@
             border-top: 1px solid var(--light-border);
             padding-top: 8px;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             font-size: 0.68rem;
             color: #6e6e73;
         }
@@ -534,6 +544,7 @@
                         <div class="meta-text-line" id="sheet-inv-num-line"><strong>Invoice #:</strong> <span id="out-inv-num"></span></div>
                         <div class="meta-text-line"><strong>Date:</strong> <span id="out-date"></span></div>
                         <div class="meta-text-line"><strong>Due Date:</strong> <span id="out-due-date"></span></div>
+                        <div class="meta-text-line" id="sheet-tax-top-line"><strong>HST/GST ID:</strong> <span id="out-tax-num-top">773719570RT0001</span></div>
                     </div>
                 </div>
 
@@ -577,6 +588,7 @@
                     <div class="terms-box">
                         <strong>Terms of Settlement</strong>
                         Electronic funds transfer routing instructions point directly to the designated email communications address line. Please include your reference identification assignment code within your balance settlement transactions profile stack to clear open balances promptly.
+                        <span class="payment-alert">Payment Method: E-transfer payable to renovations.chd@instantrenovations.ca</span>
                     </div>
                     <div class="pricing-box">
                         <table>
@@ -597,9 +609,6 @@
                 </div>
 
                 <div class="sheet-footer">
-                    <div>
-                        <span id="out-tax-reg-id-line">HST/GST ID: 773719570RT0001</span>
-                    </div>
                     <div>Instant Renovations Inc. &mdash; Professional Custom Contracting Solutions</div>
                 </div>
             </div>
@@ -667,7 +676,7 @@
             
             const sheetTaxRow = document.getElementById('sheet-tax-item-row');
             const sheetInvLine = document.getElementById('sheet-inv-num-line');
-            const taxRegText = document.getElementById('out-tax-reg-id-line');
+            const sheetTaxTopLine = document.getElementById('sheet-tax-top-line');
             
             const activeStatus = document.getElementById('in-tax-toggle').checked;
 
@@ -676,13 +685,13 @@
                 invInputArea.style.display = 'block';
                 sheetTaxRow.style.display = 'table-row';
                 sheetInvLine.style.display = 'block';
-                taxRegText.style.display = 'inline';
+                sheetTaxTopLine.style.display = 'block';
             } else {
                 taxInputArea.style.display = 'none';
                 invInputArea.style.display = 'none';
                 sheetTaxRow.style.display = 'none';
                 sheetInvLine.style.display = 'none';
-                taxRegText.style.display = 'none';
+                sheetTaxTopLine.style.display = 'none';
             }
             refreshInvoiceData();
         }
@@ -696,11 +705,11 @@
             const rawDueDate = document.getElementById('in-due-date').value;
             document.getElementById('out-due-date').innerText = rawDueDate ? new Date(rawDueDate + 'T00:00:00').toLocaleDateString('en-CA') : '';
 
-            document.getElementById('out-client-name').innerText = document.getElementById('in-client-name').value || 'Client Assignment Designation';
-            document.getElementById('out-client-addr').innerText = document.getElementById('in-client-addr').value || 'Destination Billing Location Coordinates';
+            document.getElementById('out-client-name').innerText = document.getElementById('in-client-name').value || 'Client Designation Entity';
+            document.getElementById('out-client-addr').innerText = document.getElementById('in-client-addr').value || 'Destination Billing Address Parameters';
 
             const taxNumInput = document.getElementById('in-tax-num').value;
-            document.getElementById('out-tax-reg-id-line').innerText = taxNumInput ? `HST/GST ID: ${taxNumInput}` : '';
+            document.getElementById('out-tax-num-top').innerText = taxNumInput || '';
 
             const tableTarget = document.getElementById('sheet-table-body');
             tableTarget.innerHTML = '';
