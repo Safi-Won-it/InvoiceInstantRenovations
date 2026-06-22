@@ -479,7 +479,7 @@
             <div style="margin-bottom: 5px;">
                 <label class="apple-toggle-label">
                     <input type="checkbox" id="in-tax-toggle" checked onchange="toggleTaxView()">
-                    Apply Harmonized Sales Tax (13% HST)
+                    Apply Harmonized Sales Tax (13% GST/HST)
                 </label>
             </div>
         </div>
@@ -501,7 +501,7 @@
                 </div>
             </div>
             <div id="tax-input-wrap" class="conditional-group" style="margin-top: 15px;">
-                <label>HST Account Registration Reference</label>
+                <label>GST/HST Account Registration Reference</label>
                 <input type="text" id="in-tax-num" value="773719570RT0001" oninput="refreshInvoiceData()" style="max-width: 280px;">
             </div>
         </div>
@@ -544,7 +544,7 @@
                         <div class="meta-text-line" id="sheet-inv-num-line"><strong>Invoice #:</strong> <span id="out-inv-num"></span></div>
                         <div class="meta-text-line"><strong>Date:</strong> <span id="out-date"></span></div>
                         <div class="meta-text-line"><strong>Due Date:</strong> <span id="out-due-date"></span></div>
-                        <div class="meta-text-line" id="sheet-tax-top-line"><strong>HST/GST ID:</strong> <span id="out-tax-num-top">773719570RT0001</span></div>
+                        <div class="meta-text-line" id="sheet-tax-top-line"><strong>GST/HST ID:</strong> <span id="out-tax-num-top">773719570RT0001</span></div>
                     </div>
                 </div>
 
@@ -597,7 +597,7 @@
                                 <td class="text-right" id="out-subtotal">$0.00</td>
                             </tr>
                             <tr id="sheet-tax-item-row">
-                                <td>Harmonized Sales Tax (13%):</td>
+                                <td>GST/HST (13%):</td>
                                 <td class="text-right" id="out-tax">$0.00</td>
                             </tr>
                             <tr class="grand-total-row">
