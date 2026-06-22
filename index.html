@@ -116,9 +116,9 @@
             margin-bottom: 10px;
             align-items: center;
         }
-        .flex-row-input .desc { flex: 3; }
-        .flex-row-input .qty { flex: 1; }
-        .flex-row-input .price { flex: 1; }
+        .flex-row-input class="desc" { flex: 3; }
+        .flex-row-input class="qty" { flex: 1; }
+        .flex-row-input class="price" { flex: 1; }
 
         .btn {
             background-color: var(--apple-input);
@@ -169,7 +169,7 @@
             display: inline-flex; 
             align-items: center; 
             gap: 10px; 
-font-weight: 550; 
+            font-weight: 550; 
             font-size: 0.9rem;
             cursor: pointer;
             user-select: none;
@@ -221,10 +221,12 @@ font-weight: 550;
             background: white;
             color: var(--charcoal);
             width: 8.5in;
-            min-height: 11in;
-            padding: 0.6in 0.5in;
+            height: 11in;
+            padding: 0.5in;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            display: block;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             box-sizing: border-box;
             position: relative;
         }
@@ -234,7 +236,7 @@ font-weight: 550;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .logo-box {
@@ -244,7 +246,7 @@ font-weight: 550;
         .logo-box img {
             width: 100%;
             height: auto;
-            object-fit: contain;
+            display: block;
         }
 
         .header-meta-box {
@@ -272,7 +274,7 @@ font-weight: 550;
         .identity-container {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             gap: 30px;
         }
 
@@ -300,7 +302,8 @@ font-weight: 550;
 
         /* Items Ledger Area */
         .items-table-area {
-            margin-bottom: 35px;
+            margin-bottom: 20px;
+            flex-grow: 1;
         }
 
         .minimal-table {
@@ -321,7 +324,7 @@ font-weight: 550;
         }
 
         .minimal-table td {
-            padding: 8px 4px;
+            padding: 7px 4px;
             border-bottom: 1px solid var(--light-border);
             color: #333333;
         }
@@ -336,7 +339,7 @@ font-weight: 550;
             justify-content: space-between;
             align-items: flex-start;
             padding-top: 10px;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
         }
 
         .terms-box {
@@ -383,10 +386,6 @@ font-weight: 550;
             justify-content: space-between;
             font-size: 0.68rem;
             color: #6e6e73;
-            position: absolute;
-            bottom: 0.5in;
-            left: 0.5in;
-            right: 0.5in;
         }
 
         /* --- STABLE NATIVE MOBILE PRINT CONFIGURATION --- */
@@ -400,6 +399,7 @@ font-weight: 550;
                 background: #ffffff !important;
                 color: #000000 !important;
                 width: 8.5in !important;
+                height: 11in !important;
                 margin: 0 !important;
                 padding: 0 !important;
                 overflow: hidden !important;
@@ -410,21 +410,25 @@ font-weight: 550;
             .control-panel, .app-header-title {
                 display: none !important;
                 opacity: 0 !important;
+                height: 0 !important;
             }
 
             .invoice-sheet-container {
                 display: block !important;
                 width: 8.5in !important;
+                height: 11in !important;
                 padding: 0 !important;
                 margin: 0 !important;
                 overflow: hidden !important;
             }
 
             .invoice-sheet {
-                display: block !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
                 box-shadow: none !important;
                 width: 8.5in !important;
-                height: 10.9in !important; /* Force content bounds inside 11 inches to lock on exactly 1 page */
+                height: 11in !important;
                 padding: 0.5in 0.5in !important;
                 box-sizing: border-box !important;
                 background: #ffffff !important;
@@ -435,14 +439,7 @@ font-weight: 550;
 
             .minimal-table td, .minimal-table th {
                 font-size: 11px !important;
-                padding: 6px 4px !important;
-            }
-
-            .sheet-footer {
-                position: absolute !important;
-                bottom: 0.4in !important;
-                left: 0.5in !important;
-                right: 0.5in !important;
+                padding: 5px 4px !important;
             }
         }
 
@@ -464,6 +461,7 @@ font-weight: 550;
 
     <h1 class="app-header-title">Instant Renovations Studio</h1>
 
+    <!-- APPLE DESIGN DARK CONTROL CENTER -->
     <div class="control-panel">
         
         <div class="panel-section">
@@ -521,37 +519,42 @@ font-weight: 550;
         <button class="btn btn-print" onclick="window.print()">Print / Export Single-Page PDF</button>
     </div>
 
+    <!-- PREPARED WORKSPACE SHEET AREA -->
     <div class="invoice-sheet-container">
         <div class="invoice-sheet" id="print-sheet">
             
-            <div class="invoice-header">
-                <div class="logo-box">
-                    <img id="sheet-logo-img" src="instantlogo.png" alt="Logo">
+            <!-- Top Structural Block -->
+            <div>
+                <div class="invoice-header">
+                    <div class="logo-box">
+                        <img id="sheet-logo-img" src="instantlogo_2.png" alt="Logo">
+                    </div>
+                    <div class="header-meta-box">
+                        <h1>INVOICE</h1>
+                        <div class="meta-text-line" id="sheet-inv-num-line"><strong>Invoice #:</strong> <span id="out-inv-num"></span></div>
+                        <div class="meta-text-line"><strong>Date:</strong> <span id="out-date"></span></div>
+                        <div class="meta-text-line"><strong>Due Date:</strong> <span id="out-due-date"></span></div>
+                    </div>
                 </div>
-                <div class="header-meta-box">
-                    <h1>INVOICE</h1>
-                    <div class="meta-text-line" id="sheet-inv-num-line"><strong>Invoice #:</strong> <span id="out-inv-num"></span></div>
-                    <div class="meta-text-line"><strong>Date:</strong> <span id="out-date"></span></div>
-                    <div class="meta-text-line"><strong>Due Date:</strong> <span id="out-due-date"></span></div>
+
+                <div class="identity-container">
+                    <div class="identity-column">
+                        <h4>Corporate Operations</h4>
+                        <div class="company-name">Instant Renovations Inc.</div>
+                        <div>Toronto, ON, Canada</div>
+                        <div>Phone: +1 437-860-2717</div>
+                        <div>Email: renovations.chd@instantrenovations.ca</div>
+                        <div>Web: www.instantrenovations.ca</div>
+                    </div>
+                    <div class="identity-column">
+                        <h4>Prepared Exclusively For</h4>
+                        <div class="company-name" id="out-client-name">Client Designation Entity</div>
+                        <div id="out-client-addr">Destination Billing Address Parameters</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="identity-container">
-                <div class="identity-column">
-                    <h4>Corporate Operations</h4>
-                    <div class="company-name">Instant Renovations Inc.</div>
-                    <div>Toronto, ON, Canada</div>
-                    <div>Phone: +1 437-860-2717</div>
-                    <div>Email: renovations.chd@instantrenovations.ca</div>
-                    <div>Web: www.instantrenovations.ca</div>
-                </div>
-                <div class="identity-column">
-                    <h4>Prepared Exclusively For</h4>
-                    <div class="company-name" id="out-client-name">Client Designation Entity</div>
-                    <div id="out-client-addr">Destination Billing Address Parameters</div>
-                </div>
-            </div>
-
+            <!-- Middle Table Ledger Area -->
             <div class="items-table-area">
                 <table class="minimal-table">
                     <thead>
@@ -563,38 +566,42 @@ font-weight: 550;
                         </tr>
                     </thead>
                     <tbody id="sheet-table-body">
-                        </tbody>
+                        <!-- Injected rows appear here -->
+                    </tbody>
                 </table>
             </div>
 
-            <div class="summary-container">
-                <div class="terms-box">
-                    <strong>Terms of Settlement</strong>
-                    Electronic funds transfer routing instructions point directly to the designated email communications address line. Please include your reference identification assignment code within your balance settlement transactions profile stack to clear open balances promptly.
+            <!-- Bottom Financial and Footer Area Block -->
+            <div>
+                <div class="summary-container">
+                    <div class="terms-box">
+                        <strong>Terms of Settlement</strong>
+                        Electronic funds transfer routing instructions point directly to the designated email communications address line. Please include your reference identification assignment code within your balance settlement transactions profile stack to clear open balances promptly.
+                    </div>
+                    <div class="pricing-box">
+                        <table>
+                            <tr>
+                                <td>Subtotal:</td>
+                                <td class="text-right" id="out-subtotal">$0.00</td>
+                            </tr>
+                            <tr id="sheet-tax-item-row">
+                                <td>Harmonized Sales Tax (13%):</td>
+                                <td class="text-right" id="out-tax">$0.00</td>
+                            </tr>
+                            <tr class="grand-total-row">
+                                <td>Balance Due:</td>
+                                <td class="text-right" id="out-total">$0.00</td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
-                <div class="pricing-box">
-                    <table>
-                        <tr>
-                            <td>Subtotal:</td>
-                            <td class="text-right" id="out-subtotal">$0.00</td>
-                        </tr>
-                        <tr id="sheet-tax-item-row">
-                            <td>Harmonized Sales Tax (13%):</td>
-                            <td class="text-right" id="out-tax">$0.00</td>
-                        </tr>
-                        <tr class="grand-total-row">
-                            <td>Balance Due:</td>
-                            <td class="text-right" id="out-total">$0.00</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
 
-            <div class="sheet-footer">
-                <div>
-                    <span id="out-tax-reg-id-line">HST/GST ID: 773719570RT0001</span>
+                <div class="sheet-footer">
+                    <div>
+                        <span id="out-tax-reg-id-line">HST/GST ID: 773719570RT0001</span>
+                    </div>
+                    <div>Instant Renovations Inc. &mdash; Professional Custom Contracting Solutions</div>
                 </div>
-                <div>Instant Renovations Inc. &mdash; Professional Custom Contracting Solutions</div>
             </div>
 
         </div>
