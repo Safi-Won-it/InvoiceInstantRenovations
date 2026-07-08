@@ -93,6 +93,13 @@
             font-weight: 550;
         }
 
+        .input-header-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 8px;
+            padding-right: 44px; /* Matches input layout minus button width + gap */
+        }
+
         input, textarea, select {
             width: 100%;
             padding: 10px 12px;
@@ -104,7 +111,7 @@
             transition: all 0.15s ease-in-out;
         }
 
-        input:focus {
+        input:focus, select:focus {
             outline: none;
             border-color: var(--apple-accent);
             box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.25);
@@ -116,9 +123,6 @@
             margin-bottom: 10px;
             align-items: center;
         }
-        .flex-row-input .desc { flex: 3; }
-        .flex-row-input .qty { flex: 1; }
-        .flex-row-input .price { flex: 1; }
 
         .btn {
             background-color: var(--apple-input);
@@ -454,6 +458,9 @@
         }
 
         @media (max-width: 768px) {
+            .input-header-row {
+                display: none !important;
+            }
             .flex-row-input {
                 flex-direction: column;
                 background: rgba(255,255,255,0.04);
@@ -471,9 +478,18 @@
 
     <h1 class="app-header-title">Instant Renovations Studio</h1>
 
-    <!-- APPLE DESIGN DARK CONTROL CENTER -->
     <div class="control-panel">
         
+        <div class="panel-section">
+            <h3>Invoice Mode Architecture</h3>
+            <div style="max-width: 320px;">
+                <select id="in-invoice-type" onchange="switchInvoiceType()">
+                    <option value="business" selected>Business Invoice (Standard Client View)</option>
+                    <option value="management">Management Invoice (Workforce Breakdown)</option>
+                </select>
+            </div>
+        </div>
+
         <div class="panel-section">
             <h3>Tax Preferences</h3>
             <div style="margin-bottom: 5px;">
@@ -522,22 +538,21 @@
 
         <div class="panel-section">
             <h3>Line Items Ledger</h3>
+            <div id="input-columns-header" class="input-header-row"></div>
             <div id="dynamic-items-box"></div>
-            <button class="btn" onclick="addNewLineItem()">+ Append Service Item</button>
+            <button class="btn" id="btn-append-item" onclick="addNewLineItem()">+ Append Service Item</button>
         </div>
 
         <button class="btn btn-print" onclick="window.print()">Print / Export Single-Page PDF</button>
     </div>
 
-    <!-- PREPARED WORKSPACE SHEET AREA -->
     <div class="invoice-sheet-container">
         <div class="invoice-sheet" id="print-sheet">
             
-            <!-- Top Structural Block -->
             <div>
                 <div class="invoice-header">
                     <div class="logo-box">
-                        <img id="sheet-logo-img" src="instantlogo_2.png" alt="Logo">
+                        <img id="sheet-logo-img" src="instantlogo_2 (1).png" alt="Logo">
                     </div>
                     <div class="header-meta-box">
                         <h1>INVOICE</h1>
@@ -565,24 +580,15 @@
                 </div>
             </div>
 
-            <!-- Middle Table Ledger Area -->
             <div class="items-table-area">
                 <table class="minimal-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 60%;">Description of Services Rendered</th>
-                            <th class="text-right" style="width: 10%;">Qty</th>
-                            <th class="text-right" style="width: 15%;">Unit Rate</th>
-                            <th class="text-right" style="width: 15%;">Amount</th>
-                        </tr>
-                    </thead>
+                    <thead id="sheet-table-header">
+                        </thead>
                     <tbody id="sheet-table-body">
-                        <!-- Injected rows appear here -->
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
 
-            <!-- Bottom Financial and Footer Area Block -->
             <div>
                 <div class="summary-container">
                     <div class="terms-box">
@@ -622,9 +628,26 @@
         futureDate.setDate(futureDate.getDate() + 30); 
         document.getElementById('in-due-date').valueAsDate = futureDate;
 
+        // Preloaded example data sets
         let workspaceItems = [
-            { description: 'Premium Minimal Living Room Structural Upgrades', qty: 1, price: 4850.00 },
-            { description: 'Architectural Custom Millwork Fitment & Trim Optimization', qty: 1, price: 1950.00 }
+            { 
+                description: 'Demolition & Structural Framing Upgrades', 
+                qty: 1, 
+                price: 1620.00,
+                unitNo: 'APT-101', 
+                workforce: 3, 
+                hours: 12, 
+                hourlyRate: 45.00 
+            },
+            { 
+                description: 'Drywall Installation, Taping & Sanding Optimization', 
+                qty: 1, 
+                price: 2000.00,
+                unitNo: 'APT-102', 
+                workforce: 2, 
+                hours: 20, 
+                hourlyRate: 50.00 
+            }
         ];
 
         function runStartupConfig() {
@@ -633,24 +656,77 @@
             toggleTaxView();
         }
 
+        function switchInvoiceType() {
+            const currentMode = document.getElementById('in-invoice-type').value;
+            const appendBtn = document.getElementById('btn-append-item');
+            
+            if (currentMode === 'management') {
+                appendBtn.innerText = "+ Append Management Item";
+            } else {
+                appendBtn.innerText = "+ Append Service Item";
+            }
+            
+            renderControlsList();
+            refreshInvoiceData();
+        }
+
         function renderControlsList() {
+            const headerContainer = document.getElementById('input-columns-header');
             const container = document.getElementById('dynamic-items-box');
+            const activeMode = document.getElementById('in-invoice-type').value;
+            
             container.innerHTML = '';
-            workspaceItems.forEach((item, pointer) => {
-                const subRow = document.createElement('div');
-                subRow.className = 'flex-row-input';
-                subRow.innerHTML = `
-                    <input type="text" class="desc" value="${item.description}" placeholder="Service description" oninput="editItemStore(${pointer}, 'description', this.value)">
-                    <input type="number" class="qty" value="${item.qty}" min="0" step="any" placeholder="Qty" oninput="editItemStore(${pointer}, 'qty', this.value)">
-                    <input type="number" class="price" value="${item.price}" min="0" step="0.01" placeholder="Rate" oninput="editItemStore(${pointer}, 'price', this.value)">
-                    <button class="btn btn-danger" onclick="deleteLineItem(${pointer})">✕</button>
+            
+            if (activeMode === 'management') {
+                // Renders the exact custom header labels above input elements
+                headerContainer.innerHTML = `
+                    <div style="flex: 2;"><label>Description of Services</label></div>
+                    <div style="flex: 1; min-width: 80px;"><label>Unit/No#</label></div>
+                    <div style="flex: 1;"><label>Workforce</label></div>
+                    <div style="flex: 1;"><label>Hours</label></div>
+                    <div style="flex: 1;"><label>Hourly Rate</label></div>
                 `;
-                container.appendChild(subRow);
-            });
+                
+                workspaceItems.forEach((item, pointer) => {
+                    const subRow = document.createElement('div');
+                    subRow.className = 'flex-row-input';
+                    subRow.innerHTML = `
+                        <input type="text" style="flex: 2;" value="${item.description || ''}" placeholder="Description of Services" oninput="editItemStore(${pointer}, 'description', this.value)">
+                        <input type="text" style="flex: 1; min-width: 80px;" value="${item.unitNo || ''}" placeholder="Unit/No#" oninput="editItemStore(${pointer}, 'unitNo', this.value)">
+                        <input type="number" style="flex: 1;" value="${item.workforce}" min="1" step="1" oninput="editItemStore(${pointer}, 'workforce', this.value)">
+                        <input type="number" style="flex: 1;" value="${item.hours}" min="0" step="any" oninput="editItemStore(${pointer}, 'hours', this.value)">
+                        <input type="number" style="flex: 1;" value="${item.hourlyRate}" min="0" step="0.01" oninput="editItemStore(${pointer}, 'hourlyRate', this.value)">
+                        <button class="btn btn-danger" style="width: 34px; padding: 8px 0; text-align: center;" onclick="deleteLineItem(${pointer})">✕</button>
+                    `;
+                    container.appendChild(subRow);
+                });
+            } else {
+                // Standard business invoice input configuration labels
+                headerContainer.innerHTML = `
+                    <div style="flex: 3;"><label>Description of Services Rendered</label></div>
+                    <div style="flex: 1;"><label>Qty</label></div>
+                    <div style="flex: 1;"><label>Unit Rate</label></div>
+                `;
+                
+                workspaceItems.forEach((item, pointer) => {
+                    const subRow = document.createElement('div');
+                    subRow.className = 'flex-row-input';
+                    subRow.innerHTML = `
+                        <input type="text" style="flex: 3;" value="${item.description || ''}" placeholder="Service description" oninput="editItemStore(${pointer}, 'description', this.value)">
+                        <input type="number" style="flex: 1;" value="${item.qty}" min="0" step="any" oninput="editItemStore(${pointer}, 'qty', this.value)">
+                        <input type="number" style="flex: 1;" value="${item.price}" min="0" step="0.01" oninput="editItemStore(${pointer}, 'price', this.value)">
+                        <button class="btn btn-danger" style="width: 34px; padding: 8px 0; text-align: center;" onclick="deleteLineItem(${pointer})">✕</button>
+                    `;
+                    container.appendChild(subRow);
+                });
+            }
         }
 
         function addNewLineItem() {
-            workspaceItems.push({ description: '', qty: 1, price: 0.00 });
+            workspaceItems.push({ 
+                description: '', qty: 1, price: 0.00,
+                unitNo: '', workforce: 1, hours: 0, hourlyRate: 0.00 
+            });
             renderControlsList();
             refreshInvoiceData();
         }
@@ -662,7 +738,8 @@
         }
 
         function editItemStore(pointer, metric, dataValue) {
-            if (metric === 'qty' || metric === 'price') {
+            const numericFields = ['qty', 'price', 'workforce', 'hours', 'hourlyRate'];
+            if (numericFields.includes(metric)) {
                 workspaceItems[pointer][metric] = parseFloat(dataValue) || 0;
             } else {
                 workspaceItems[pointer][metric] = dataValue;
@@ -711,24 +788,65 @@
             const taxNumInput = document.getElementById('in-tax-num').value;
             document.getElementById('out-tax-num-top').innerText = taxNumInput || '';
 
+            const headerTarget = document.getElementById('sheet-table-header');
             const tableTarget = document.getElementById('sheet-table-body');
-            tableTarget.innerHTML = '';
+            const activeMode = document.getElementById('in-invoice-type').value;
             
+            tableTarget.innerHTML = '';
             let incrementalSubtotal = 0;
 
-            workspaceItems.forEach(lineItem => {
-                const structuralRowCost = lineItem.qty * lineItem.price;
-                incrementalSubtotal += structuralRowCost;
-
-                const trElement = document.createElement('tr');
-                trElement.innerHTML = `
-                    <td>${lineItem.description || 'Custom Architecture Configuration'}</td>
-                    <td class="text-right">${lineItem.qty}</td>
-                    <td class="text-right">$${lineItem.price.toFixed(2)}</td>
-                    <td class="text-right">$${structuralRowCost.toFixed(2)}</td>
+            if (activeMode === 'management') {
+                headerTarget.innerHTML = `
+                    <tr>
+                        <th style="width: 32%;">Description of Services Rendered</th>
+                        <th style="width: 15%;">Unit/No#</th>
+                        <th class="text-right" style="width: 13%;">Workforce</th>
+                        <th class="text-right" style="width: 10%;">Hours</th>
+                        <th class="text-right" style="width: 15%;">Hourly Rate</th>
+                        <th class="text-right" style="width: 15%;">Amount</th>
+                    </tr>
                 `;
-                tableTarget.appendChild(trElement);
-            });
+
+                workspaceItems.forEach(lineItem => {
+                    const rowCost = lineItem.workforce * lineItem.hours * lineItem.hourlyRate;
+                    incrementalSubtotal += rowCost;
+
+                    const trElement = document.createElement('tr');
+                    trElement.innerHTML = `
+                        <td>${lineItem.description || 'Custom Operations Deployment'}</td>
+                        <td>${lineItem.unitNo || '&mdash;'}</td>
+                        <td class="text-right">${lineItem.workforce}</td>
+                        <td class="text-right">${lineItem.hours}</td>
+                        <td class="text-right">$${lineItem.hourlyRate.toFixed(2)}</td>
+                        <td class="text-right">$${rowCost.toFixed(2)}</td>
+                    `;
+                    tableTarget.appendChild(trElement);
+                });
+
+            } else {
+                headerTarget.innerHTML = `
+                    <tr>
+                        <th style="width: 60%;">Description of Services Rendered</th>
+                        <th class="text-right" style="width: 10%;">Qty</th>
+                        <th class="text-right" style="width: 15%;">Unit Rate</th>
+                        <th class="text-right" style="width: 15%;">Amount</th>
+                    </tr>
+                `;
+
+                workspaceItems.forEach(lineItem => {
+                    const rowCost = lineItem.qty * lineItem.price;
+                    incrementalSubtotal += rowCost;
+
+                    const trElement = document.createElement('tr');
+                    trElement.innerHTML = `
+                        <td>${lineItem.description || 'Custom Architecture Configuration'}</td>
+                        <td class="text-right">${lineItem.qty}</td>
+                        <td class="text-right">$${lineItem.price.toFixed(2)}</td>
+                        <td class="text-right">$${rowCost.toFixed(2)}</td>
+                    `;
+                    tableTarget.appendChild(trElement);
+                });
+            }
 
             const taxFactor = document.getElementById('in-tax-toggle').checked ? 0.13 : 0;
             const absoluteTaxAmount = incrementalSubtotal * taxFactor;
